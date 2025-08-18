@@ -23,7 +23,7 @@ const App = (props: Props) => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route
-            path="/interview-prep/:sessionId"
+            path="/interview-prep/:lessonId"
             element={<InterviewPrep />}
           />
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
