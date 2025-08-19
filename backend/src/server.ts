@@ -3,28 +3,33 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import connectDB from "./config/db.js";
-import { fileURLToPath } from "url";
+import authRouter from "./routes/auth.route.js";
+import { protect } from "./middlewares/auth.middleware.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 
 const corsOptions = {
-  origin: "*",
+  origin: ["http://localhost:5173"],
   methods: ["POST", "PUT", "GET", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 };
 
 // middleware
 app.use(cors(corsOptions));
-
 app.use(express.json());
+app.use(cookieParser());
 
 // routes
-app.use("/", () => {}); // landing page
-app.use("/login", () => {}); // login
-app.use("/sign-up", () => {});
-app.use("/interview-prep/:lessonId", () => {}); // interview prep
+app.use("/api/auth", authRouter);
+// app.use("/api/lesson", lessonRouter)
+// app.use("/api/questions", questionRouter);
+
+// app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
+// app.use("/api/ai/generate-explanation", protect, generateInterviewExplanation);
 
 // Serve uploads folder
 app.use("/uploads", express.static(path.join(import.meta.dirname, "uploads")));
