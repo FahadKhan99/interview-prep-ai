@@ -12,7 +12,8 @@ const lessonSchema = new mongoose.Schema(
 
     isInProgress: { type: Boolean, default: true }, // isInProgress
     isFavorite: { type: Boolean, default: false }, // bookmark
-    visibility: {      // sharing
+    visibility: {
+      // sharing
       type: String,
       enum: ["private", "public"],
       default: "private",
@@ -22,5 +23,7 @@ const lessonSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+export type LessonType = mongoose.InferSchemaType<typeof lessonSchema>;
 
 export const Lesson = mongoose.model("Lesson", lessonSchema);

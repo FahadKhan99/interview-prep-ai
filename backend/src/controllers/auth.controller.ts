@@ -147,3 +147,23 @@ export const logoutUser = (req: Request, res: Response) => {
     .status(HttpStatus.OK)
     .json({ message: "User logged out successfully" });
 };
+
+export const uploadImageHandler = (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "No file uploaded" });
+    }
+
+    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+      req.file.filename
+    }`;
+    return res.status(HttpStatus.OK).json({ imageUrl });
+  } catch (error: any) {
+    console.log("Error in uploadImage: ", error);
+    return res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Something went wrong" });
+  }
+};

@@ -13,4 +13,5 @@ const questionSchema = new mongoose.Schema(
   }
 );
 
+export type QuestionType = mongoose.InferSchemaType<typeof questionSchema>;
 export const Question = mongoose.model("Question", questionSchema);

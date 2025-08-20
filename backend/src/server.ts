@@ -6,6 +6,9 @@ import connectDB from "./config/db.js";
 import authRouter from "./routes/auth.route.js";
 import { protect } from "./middlewares/auth.middleware.js";
 import cookieParser from "cookie-parser";
+import lessonRouter from "./routes/lesson.route.js";
+import questionRouter from "./routes/question.route.js";
+
 
 dotenv.config();
 
@@ -25,8 +28,8 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/auth", authRouter);
-// app.use("/api/lesson", lessonRouter)
-// app.use("/api/questions", questionRouter);
+app.use("/api/lessons", lessonRouter);
+app.use("/api/questions", questionRouter);
 
 // app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 // app.use("/api/ai/generate-explanation", protect, generateInterviewExplanation);
