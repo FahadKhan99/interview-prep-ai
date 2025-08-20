@@ -1,4 +1,5 @@
 export const validateEmail = (email: string) => {
-  const regrexTemplate = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-  return regrexTemplate.test(email);
-}
+  const regexTemplate =
+    /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|yahoo\.com)$/;
+  return regexTemplate.test(email);
+};

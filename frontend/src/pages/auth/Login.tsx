@@ -1,7 +1,10 @@
-import React, { useState, type FormEvent } from "react";
+import React, { useContext, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/inputs/Input";
 import { validateEmail } from "../../utils/helper";
+import { API_PATHS } from "../../utils/apiPaths";
+import api from "../../utils/axiosInstance";
+import { useUserContext } from "../../hooks/useUserContext";
 
 interface Props {
   setCurrentPage: React.Dispatch<React.SetStateAction<"login" | "signup">>;
@@ -12,24 +15,37 @@ const Login = ({ setCurrentPage }: Props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const { updateUser } = useUserContext();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
+      console.log("email: ", email);
       setError("Please enter a valid email!");
       return;
     }
-    
-    if (!password || password.length !== 8) {
-      setError("Password must be exactly 8 characters long");
+
+    if (!password || password.length < 8) {
+      setError("Password must be atleast 8 characters long");
       return;
     }
     setError("");
 
     // Login API call
     try {
+      const res = await api.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+
+      const { user } = res.data;
+
+      if (user) {
+        updateUser(user); // save user in context
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);

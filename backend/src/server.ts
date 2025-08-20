@@ -13,6 +13,7 @@ import {
   generateConceptExplanation,
   generateInterviewQuestions,
 } from "./controllers/ai.controller.js";
+import { fileURLToPath } from "url";
 
 const app = express();
 
@@ -37,7 +38,8 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/ai/generate-explanation", protect, generateConceptExplanation);
 
 // Serve uploads folder
-app.use("/uploads", express.static(path.join(import.meta.dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(import.meta.dirname, "uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // connect to db & start server
 const PORT = process.env.PORT || "5000";
