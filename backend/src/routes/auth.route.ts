@@ -19,6 +19,6 @@ authRouter.route("/profile").get(protect, getUserProfile);
 
 authRouter
   .route("/upload-image")
-  .post(protect, upload.single("image"), uploadImageHandler);
+  .post(upload.single("image"), uploadImageHandler);
 
 export default authRouter;

@@ -3,6 +3,10 @@ import Input from "../../components/inputs/Input";
 import { useNavigate } from "react-router-dom";
 import UploadProfilePhoto from "../../components/inputs/UploadProfilePhoto";
 import { validateEmail } from "../../utils/helper";
+import api from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { useUserContext } from "../../hooks/useUserContext";
+import { uploadImage } from "../../utils/uploadImage";
 
 interface Props {
   setCurrentPage: React.Dispatch<React.SetStateAction<"login" | "signup">>;
@@ -16,8 +20,12 @@ const SignUp = ({ setCurrentPage }: Props) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const { updateUser } = useUserContext();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    let profileImageUrl = "";
 
     if (!fullName) {
       setError("Please enter full name.");
@@ -29,8 +37,8 @@ const SignUp = ({ setCurrentPage }: Props) => {
       return;
     }
 
-    if (!password || password.length !== 8) {
-      setError("Password must be exactly 8 characters long");
+    if (!password || password.length < 8) {
+      setError("Password must be atleast 8 characters long");
       return;
     }
 
@@ -38,6 +46,26 @@ const SignUp = ({ setCurrentPage }: Props) => {
 
     // Signup API call
     try {
+      // update the image if present
+      if (profilePic) {
+        // calls the upload-image api
+        const imageUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imageUploadRes.imageUrl || "";
+      }
+
+      const res = await api.post(API_PATHS.AUTH.REGISTER, {
+        fullName,
+        email,
+        password,
+        profileImageUrl,
+      });
+
+      const { user } = res.data;
+
+      if (user) {
+        updateUser(user);
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);

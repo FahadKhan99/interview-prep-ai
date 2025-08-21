@@ -45,11 +45,10 @@ export const createLesson = async (req: Request, res: Response) => {
 
 export const getMyLessons = async (req: Request, res: Response) => {
   try {
-    console.log("UserId: ", req.userId);
     const lessons = await Lesson.find({ user: req.userId })
       .sort({ createdAt: -1 })
       .populate("questions");
-    res.status(HttpStatus.OK).json({ lessons });
+    res.status(HttpStatus.OK).json(lessons);
   } catch (error) {
     console.log("Error getMyLesson: ", error);
     return res
