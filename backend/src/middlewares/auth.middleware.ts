@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { HttpStatus } from "../utils/httpStatusCodes";
-
+const { TokenExpiredError } = jwt;
 interface JwtPayload {
   userId: string;
 }
@@ -40,9 +40,15 @@ export const protect = async (
     req.userId = decoded.userId;
     next();
   } catch (error: any) {
+    if (error instanceof TokenExpiredError) {
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Token expired. Please log in again." });
+    }
+
     console.error("Error in protect middleware:", error);
     return res
       .status(HttpStatus.UNAUTHORIZED)
-      .json({ message: "Something went wrong" });
+      .json({ message: "Invalid or missing token." });
   }
 };
