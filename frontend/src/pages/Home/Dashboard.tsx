@@ -8,6 +8,8 @@ import { LuPlus } from "react-icons/lu";
 import SummaryCard from "../../components/cards/SummaryCard";
 import { CARD_BG } from "../../utils/data";
 import moment from "moment";
+import Modal from "../../components/Modal";
+import CreateLessonForm from "./CreateLessonForm";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -75,6 +77,17 @@ const Dashboard = () => {
           <LuPlus className="text-xl text-gray-100" /> Add New
         </button>
       </div>
+      <Modal
+        hideHeader
+        isOpen={openCreateModal}
+        onClose={() => {
+          setOpenCreateModal(false);
+        }}
+      >
+        <div>
+          <CreateLessonForm />
+        </div>
+      </Modal>
     </DashboardLayout>
   );
 };
