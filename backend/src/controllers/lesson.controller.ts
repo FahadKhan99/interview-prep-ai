@@ -8,9 +8,10 @@ export const createLesson = async (req: Request, res: Response) => {
     const { role, experience, topicsToFocus, description, questions } =
       req.body;
     const userId = req.userId;
+    console.log("loggedin user: ", userId);
 
     const lesson = await Lesson.create({
-      userId,
+      user: userId,
       role,
       experience,
       topicsToFocus,
