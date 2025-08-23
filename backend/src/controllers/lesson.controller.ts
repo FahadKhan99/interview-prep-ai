@@ -49,7 +49,7 @@ export const getMyLessons = async (req: Request, res: Response) => {
     const lessons = await Lesson.find({ user: req.userId })
       .sort({ createdAt: -1 })
       .populate("questions");
-    res.status(HttpStatus.OK).json(lessons);
+    res.status(HttpStatus.OK).json({ lessons });
   } catch (error) {
     console.log("Error getMyLesson: ", error);
     return res
@@ -73,7 +73,7 @@ export const getLessonById = async (req: Request, res: Response) => {
         .json({ message: "Lesson not found" });
     }
 
-    return res.status(HttpStatus.OK).json(lesson);
+    return res.status(HttpStatus.OK).json({ lesson });
   } catch (error) {
     console.log("Error getLessonById: ", error);
     return res
