@@ -26,10 +26,9 @@ const Dashboard = () => {
   const fetchAllLessons = async () => {
     try {
       const res = await api.get(API_PATHS.LESSON.GET_ALL);
-      const lessonsData = res.data;
-      console.log(lessons);
-      if (lessonsData) {
-        setLessons(lessonsData);
+
+      if (res.data && res.data.lessons) {
+        setLessons(res.data.lessons);
       }
     } catch (error) {
       console.log("Error fetching all lessons: ", error);
