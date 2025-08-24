@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { LuChevronDown, LuPin, LuPinOff, LuSparkles } from "react-icons/lu";
+import {
+  LuCheck,
+  LuChevronDown,
+  LuCopy,
+  LuPin,
+  LuPinOff,
+  LuSparkles,
+} from "react-icons/lu";
 import AIResponsePreview from "../../pages/InterviewPrep/components/AIResponsePreview";
 
 interface Props {
@@ -20,6 +27,17 @@ const QuestionCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [height, setHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleAnswerCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(answer);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Answer Copy failed", err);
+    }
+  };
 
   useEffect(() => {
     if (isExpanded && contentRef.current) {
@@ -38,8 +56,8 @@ const QuestionCard = ({
       <div className="bg-white overflow-hidden rounded-lg mb-4 py-4 px-5 shadow-xl shadow-gray-100/70 border border-gray-100/60 group">
         <div className="flex items-start justify-between cursor-pointer">
           <div className="flex gap-3.5 items-start">
-            <span className="text-md md:text-[15px] font-semibold text-grau-400 leading-[18px]">
-              Q
+            <span className="text-md md:text-[15px] font-semibold mt-1 text-gray-400 leading-[18px]">
+              Q.
             </span>
 
             <h3
@@ -56,6 +74,23 @@ const QuestionCard = ({
                 isExpanded ? "md:flex" : "md:hidden group-hover:flex"
               }`}
             >
+              <button
+                onClick={handleAnswerCopy}
+                className="flex items-center gap-2 text-md text-teal-800 font-medium bg-teal-50 px-3 py-1 mr-2 rounded text-nowrap border border-teal-50 hover:border-teal-200 cursor-pointer"
+                aria-label="Copy Answer"
+              >
+                {copied ? (
+                  <LuCheck className="text-green-600" size={16} />
+                ) : (
+                  <LuCopy size={16} />
+                )}
+                {copied && (
+                  <span className="absolute top-8 right-35 bg-black text-white text-xs rounded-md px-2 py-1 opacity-80 group-hover:opacity-100 transition">
+                    Copied!
+                  </span>
+                )}
+              </button>
+
               <button
                 className="flex items-center gap-2 text-md text-indigo-800 font-medium bg-indigo-50 px-3 py-1 mr-2 rounded text-nowrap border border-indigo-50 hover:border-indigo-200 cursor-pointer"
                 onClick={onTogglePin}

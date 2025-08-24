@@ -10,6 +10,8 @@ import { CARD_BG } from "../../utils/data";
 import moment from "moment";
 import Modal from "../../components/Modal";
 import CreateLessonForm from "./CreateLessonForm";
+import DeleteAlertContent from "../../components/DeleteAlertContent";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -32,17 +34,18 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.log("Error fetching all lessons: ", error);
-      throw error;
     }
   };
 
-  const handleDeleteLesson = async (lessonId: string) => {
+  const handleDeleteLesson = async (lesson: Lesson) => {
     try {
-      const res = await api.delete(API_PATHS.LESSON.DELETE(lessonId));
-      const { message } = res.data;
+      console.log("HandleDelete called: ", lesson);
+      await api.delete(API_PATHS.LESSON.DELETE(lesson._id));
+      toast.success("Lesson deleted Successfully!");
+      setOpenDeleteAlert({ open: false, data: null });
+      fetchAllLessons();
     } catch (error) {
       console.log("Error deleting lesson: ", error);
-      throw error;
     }
   };
 
@@ -85,6 +88,22 @@ const Dashboard = () => {
       >
         <div>
           <CreateLessonForm />
+        </div>
+      </Modal>
+
+      {/* delete modal */}
+      <Modal
+        isOpen={openDeleteAlert.open}
+        onClose={() => {
+          setOpenDeleteAlert({ open: false, data: null });
+        }}
+        title="Delete Alert"
+      >
+        <div className="w-[70vw] md:w-[35vw]">
+          <DeleteAlertContent
+            content="Are you sure you want to delete this lesson, This action is not reversible"
+            onDelete={() => handleDeleteLesson(openDeleteAlert.data!)}
+          />
         </div>
       </Modal>
     </DashboardLayout>

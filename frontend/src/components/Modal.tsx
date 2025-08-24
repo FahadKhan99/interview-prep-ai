@@ -4,7 +4,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  hideHeader: boolean;
+  hideHeader?: boolean;
   children: ReactNode;
 }
 
@@ -18,8 +18,8 @@ const Modal = ({ isOpen, onClose, hideHeader, title, children }: Props) => {
       >
         {/* modal header */}
         {!hideHeader && (
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h3 className="md:text-lg font-medium text-gray-900">{title}</h3>
+          <div className="flex items-center justify-between p-4 border-b border-gray-300">
+            <h3 className="md:text-lg font-bold text-gray-900">{title}</h3>
           </div>
         )}
 

@@ -9,10 +9,11 @@ import { API_PATHS } from "../../utils/apiPaths";
 import { AnimatePresence, motion } from "framer-motion";
 import QuestionCard from "../../components/cards/QuestionCard";
 import toast from "react-hot-toast";
-import { LuCircleAlert } from "react-icons/lu";
+import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
 import AIResponsePreview from "./components/AIResponsePreview";
 import Drawer from "../../components/Drawer";
 import SkeletonLoader from "../../components/loader/SkeletonLoader";
+import SpinnerLoader from "../../components/loader/SpinnerLoader";
 
 const InterviewPrep = () => {
   const { lessonId } = useParams();
@@ -96,7 +97,41 @@ const InterviewPrep = () => {
     }
   };
 
-  const uploadMoreQuestions = async () => {};
+  const uploadMoreQuestions = async () => {
+    try {
+      setIsUpdateLoader(true);
+
+      // call api to generate questions
+      const aiResponse = await api.post(API_PATHS.AI.GENERATE_QUESTIONS, {
+        role: lesson?.role,
+        experience: lesson?.experience,
+        topicsToFocus: lesson?.topicsToFocus,
+        numberOfQuestions: 5,
+      });
+
+      // response [{question, answer},...]
+      const generatedQuestions = aiResponse.data;
+
+      const res = await api.post(API_PATHS.QUESTION.ADD_TO_LESSON, {
+        lessonId,
+        questions: generatedQuestions,
+      });
+
+      if (res.data) {
+        toast.success("Added More Q&As!!");
+        fetchLessonById();
+      }
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+      console.log("Error loading more Q&As: ", error);
+    } finally {
+      setIsUpdateLoader(false);
+    }
+  };
 
   useEffect(() => {
     if (lessonId) {
@@ -147,41 +182,62 @@ const InterviewPrep = () => {
                     layout // key prop that animates the position changes
                     layoutId={`question-${question._id || index}`} // helps framer tracks specific items
                   >
-                    <QuestionCard
-                      question={question.question}
-                      answer={question.answer}
-                      onLearMore={() =>
-                        generateConceptExplanation(
-                          question._id,
-                          question.question
-                        )
-                      }
-                      isPinned={question.isPinned}
-                      onTogglePin={() => handleTogglePin(question._id)}
-                    />
+                    <>
+                      <QuestionCard
+                        question={question.question}
+                        answer={question.answer}
+                        onLearMore={() =>
+                          generateConceptExplanation(
+                            question._id,
+                            question.question
+                          )
+                        }
+                        isPinned={question.isPinned}
+                        onTogglePin={() => handleTogglePin(question._id)}
+                      />
+                    </>
+
+                    {!isLoading && lesson.questions.length == index + 1 && (
+                      <div className="flex items-center justify-center mt-5">
+                        <button
+                          disabled={isLoading || isUpdateLoader}
+                          onClick={uploadMoreQuestions}
+                          className="flex items-center gap-3 text-white font-medium bg-black px-5 py-2 mr-2 rounded text-nowrap cursor-pointer"
+                        >
+                          {isUpdateLoader ? (
+                            <SpinnerLoader key={index} />
+                          ) : (
+                            <LuListCollapse className="text-xl" />
+                          )}{" "}
+                          Load More
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 );
               })}
             </AnimatePresence>
           </div>
         </div>
-        <div>
-          <Drawer
-            isOpen={openLeanMoreDrawer}
-            onClose={() => setOpenLeanMoreDrawer(false)}
-            title={isLoading ? undefined : explanation?.title}
-          >
-            {error && (
-              <p className="flex gap-2 text-md text-amber-600 font-medium">
-                <LuCircleAlert className="mt-1" /> {error}
-              </p>
-            )}
-            {isLoading && <SkeletonLoader />}
-            {!isLoading && explanation && (
-              <AIResponsePreview content={explanation.explanation} />
-            )}
-          </Drawer>
-        </div>
+        {openLeanMoreDrawer && (
+          <div>
+            <Drawer
+              isOpen={openLeanMoreDrawer}
+              onClose={() => setOpenLeanMoreDrawer(false)}
+              title={isLoading ? undefined : explanation?.title}
+            >
+              {error && (
+                <p className="flex gap-2 text-md text-amber-600 font-medium">
+                  <LuCircleAlert className="mt-1" /> {error}
+                </p>
+              )}
+              {isLoading && <SkeletonLoader />}
+              {!isLoading && explanation && (
+                <AIResponsePreview content={explanation.explanation} />
+              )}
+            </Drawer>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
