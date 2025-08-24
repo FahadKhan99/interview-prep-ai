@@ -16,8 +16,8 @@ const RoleInfoHeader = ({
   lastUpdated,
 }: Props) => {
   return (
-    <div className="bg-white relative">
-      <div className="container mx-auto px-10 md:px-0">
+    <div className="bg-white relative overflow-hidden">
+      <div className="container mx-auto px-6 md:px-10">
         <div className="h-[200px] flex flex-col justify-center relative z-10">
           <div className="flex items-start">
             <div className="flex-grow">
@@ -32,8 +32,8 @@ const RoleInfoHeader = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mt-4">
-            <div className="text-[10px] font-semibold text-white bg-black px-3 py-1 rounded-full">
+          <div className="flex flex-wrap items-center gap-3 mt-4">
+            <div className="text-[11px] font-semibold text-white bg-black px-3 py-1 rounded-full">
               Experience: {experience} {experience == "1" ? "Year" : "Years"}
             </div>
 
@@ -47,11 +47,11 @@ const RoleInfoHeader = ({
           </div>
         </div>
 
-        <div className="w-[77vw] md:w-[65vw] h-[200px] flex items-center justify-center bg-white overflow-hidden absolute top-0 right-0">
-          <div className="w-16 h-16 bg-lime-400 blur-[65px] animate-blob1" />
-          <div className="w-16 h-16 bg-teal-400 blur-[65px] animate-blob2" />
-          <div className="w-16 h-16 bg-cyan-400 blur-[65px] animate-blob3" />
-          <div className="w-16 h-16 bg-fuchsia-400 blur-[65px] animate-blob1" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-24 h-24 bg-lime-400 blur-[80px] animate-blob1" />
+          <div className="w-24 h-24 bg-teal-400 blur-[80px] animate-blob2" />
+          <div className="w-24 h-24 bg-cyan-400 blur-[80px] animate-blob3" />
+          <div className="w-24 h-24 bg-fuchsia-400 blur-[80px] animate-blob1" />
         </div>
       </div>
     </div>
