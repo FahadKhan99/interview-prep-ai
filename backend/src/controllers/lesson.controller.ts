@@ -84,7 +84,8 @@ export const getLessonById = async (req: Request, res: Response) => {
 
 export const deleteLesson = async (req: Request, res: Response) => {
   try {
-    const lesson = await Lesson.findById(req.userId);
+    const { id } = req.params;
+    const lesson = await Lesson.findById(id);
 
     if (!lesson) {
       return res
@@ -110,6 +111,11 @@ export const deleteLesson = async (req: Request, res: Response) => {
       .json({ message: "Lesson deleted successfully." });
   } catch (error) {
     console.log("Error deleting lesson: ", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
+    console.error(
+      "Error deleting lesson:",
+      error instanceof Error ? error.stack : error
+    );
     return res
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: "Something went wrong." });
