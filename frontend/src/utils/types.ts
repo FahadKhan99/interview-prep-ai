@@ -32,3 +32,9 @@ export type Lesson = {
   createdAt: string;
   updatedAt: string;
 };
+
+
+export type ConceptExplanation = {
+  title: string;
+  explanation: string;
+}
